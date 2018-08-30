@@ -9,10 +9,10 @@ include(ExternalProject)
 file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
 
 ExternalProject_Add(protobuf_src
-  URL https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+  GIT_REPOSITORY https://github.com/google/protobuf.git
+  # This TAG is found in tensorflow/contrib/cmake/external/protobuf.cmake
+  GIT_TAG b04e5cba356212e4e8c66c61bbe0c3a20537c5b9
   UPDATE_COMMAND ""
-  PATCH_COMMAND patch -p0 < ${CMAKE_SOURCE_DIR}/unused_parameter_warnings.patch &&
-                patch -p0 < ${CMAKE_SOURCE_DIR}/unused_parameter_warnings_wire_format.patch
   CONFIGURE_COMMAND cd ../protobuf_src && ./autogen.sh && ./configure --with-pic --prefix=${CATKIN_DEVEL_PREFIX}
   BUILD_COMMAND cd ../protobuf_src && make -j8 && cd python && python setup.py build --build-purelib build
   INSTALL_COMMAND cd ../protobuf_src && make install -j8 &&
