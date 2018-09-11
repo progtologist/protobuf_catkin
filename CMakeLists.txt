@@ -4,21 +4,10 @@ project(protobuf_catkin)
 find_package(catkin_simple REQUIRED)
 catkin_simple()
 
-include(ExternalProject)
-
-file(MAKE_DIRECTORY ${CATKIN_DEVEL_PREFIX}/include)
-
-ExternalProject_Add(protobuf_src
-  GIT_REPOSITORY https://github.com/google/protobuf.git
-  # This TAG is found in tensorflow/contrib/cmake/external/protobuf.cmake
-  GIT_TAG b04e5cba356212e4e8c66c61bbe0c3a20537c5b9
-  UPDATE_COMMAND ""
-  CONFIGURE_COMMAND cd ../protobuf_src && ./autogen.sh && ./configure --with-pic --prefix=${CATKIN_DEVEL_PREFIX}
-  BUILD_COMMAND cd ../protobuf_src && make -j8 && cd python && python setup.py build --build-purelib build
-  INSTALL_COMMAND cd ../protobuf_src && make install -j8 &&
-                  cd python && python setup.py install --root ${CATKIN_DEVEL_PREFIX} --install-lib ${CATKIN_GLOBAL_PYTHON_DESTINATION} &&
-                  cp build/google/__init__.py ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_PYTHON_DESTINATION}/google
-)
+include(cmake/Modules/build_external_project_autotools.cmake)
+build_external_project_autotools(protobuf
+  https://github.com/google/protobuf.git
+  b04e5cba356212e4e8c66c61bbe0c3a20537c5b9)
 
 install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/include/google/protobuf
         DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}/google
